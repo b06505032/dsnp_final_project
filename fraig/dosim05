@@ -1,0 +1,40 @@
+cirr -r tests.fraig/sim05.aag
+cirp
+cirp -n
+cirp -pi
+cirp -po
+cirp -fl
+cirg 0
+cirg 0 -fani 100
+cirg 1
+cirg 1 -fani 100
+cirg 2
+cirg 2 -fani 100
+cirg 3
+cirg 3 -fani 100
+cirg 4
+cirg 4 -fani 100
+cirg 5
+cirg 5 -fani 100
+cirg 6
+cirg 6 -fani 100
+cirg 7
+cirg 7 -fani 100
+cirg 8
+cirg 8 -fani 100
+cirg 9
+cirg 9 -fani 100
+cirg 10
+cirg 10 -fani 100
+cirg 11
+cirg 11 -fani 100
+cirg 12
+cirg 12 -fani 100
+cirg 13
+cirg 13 -fani 100
+cirg 14
+cirg 14 -fani 100
+cirg 15
+cirg 15 -fani 100
+cirw
+q -f

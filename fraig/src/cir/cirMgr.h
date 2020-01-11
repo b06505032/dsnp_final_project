@@ -13,6 +13,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <map>
 
 using namespace std;
 
@@ -26,11 +27,19 @@ class CirMgr
 {
 public:
    CirMgr() {}
-   ~CirMgr() {} 
+   ~CirMgr() {
+      // for(size_t i=0;i!=_Gatelist.size();i++) {
+      //    delete _Gatelist[i];
+      // }
+   } 
 
    // Access functions
    // return '0' if "gid" corresponds to an undefined gate.
-   CirGate* getGate(unsigned gid) const { return 0; }
+   CirGate* getGate(unsigned gid) const { 
+      map<unsigned, CirGate*>::const_iterator it = _Gatelist.find(gid);
+      if (it == _Gatelist.end()) return 0;
+      return it->second;
+   }
 
    // Member functions about circuit construction
    bool readCircuit(const string&);
@@ -61,6 +70,33 @@ public:
 
 private:
    ofstream           *_simLog;
+
+   // M, maximum index
+   // I, #inputs
+   // L, #latches = 0
+   // O, #outputs
+   // A, #AND gates
+   unsigned M,I,L,O,A;
+   vector<string> l;
+   GateList _in;
+   GateList _out;
+   GateList _aig;
+   map<unsigned, CirGate*> _Gatelist;
+   GateList _dfsList;
+   
+   // for DFS
+   static unsigned _globalRef;
+   void DFS();
+   void DFSVisit(unsigned vertex);
+
+   // Helper function
+   void readHeader();
+   void readInput();
+   void readOutput();
+   void readAig();
+   void readComment();
+   void connection();
+   bool lexOptions(const string& option, vector<string>& tokens) const;
 
 };
 
