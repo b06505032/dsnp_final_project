@@ -71,6 +71,8 @@ protected:
   vector<bool> _invert;
   vector<bool> _outinvert;
   string _name;
+
+  bool sweep = true;
 };
 
 class CirConstGate: public CirGate  {

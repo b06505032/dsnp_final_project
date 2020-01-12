@@ -8,7 +8,6 @@
 
 #include <iostream>
 #include <iomanip>
-#include <algorithm>
 #include <cstdio>
 #include <ctype.h>
 #include <cassert>
@@ -24,11 +23,12 @@
 using namespace std;
 
 // TODO: Implement memeber functions for class CirMgr
-unsigned CirMgr::_globalRef =0;
 /*******************************/
 /*   Global variable and enum  */
 /*******************************/
 CirMgr* cirMgr = 0;
+
+unsigned CirMgr::_globalRef =0;
 
 enum CirParseError {
    EXTRA_SPACE,
@@ -291,11 +291,12 @@ CirMgr::printPOs() const
 void
 CirMgr::printFloatGates() const
 {
+   
    IdList undef;
    IdList unused;
    map<unsigned, CirGate*>::const_iterator i, n;
    for (i = _Gatelist.begin(), n = _Gatelist.end(); i != n; i++) {
-      // if (i->second->_type == NULL)  continue;
+      if (i->second->_type == UNDEF_GATE)  continue;
       if (i->second->_type == CONST_GATE) continue;
       if (i->second->_type != PO_GATE && i->second->_fanout.empty())
       {
@@ -325,12 +326,43 @@ CirMgr::printFloatGates() const
          cout << ' ' << unused[i];
       cout << endl;
    }
+   // -----------
+   
+
+   /*
+   bool a1=true,a2=true;
+   map<unsigned, CirGate*>::const_iterator i, n;
+   for(i = _Gatelist.begin(), n = _Gatelist.end(); i != n; i++){
+      if (i->second->_type == CONST_GATE) continue;
+      if(i->second->_type==AIG_GATE){
+         if(i->second->_fanin[0]->_type == UNDEF_GATE or i->second->_fanin[1]->_type==UNDEF_GATE){
+            if(a1){cout<<"Gates with floating fanin(s):";a1=false;}
+            cout<<" "<< i->first;
+         }
+      }
+      if(i->second->_type==PO_GATE) {
+         if(i->second->_fanin[0]->_type == UNDEF_GATE) {
+            if(a1){cout<<"Gates with floating fanin(s):";a1=false;}
+            cout<<" "<< i->first;
+         }
+      }
+   }
+   if(!a1){cout<<endl;}
+   for(i = _Gatelist.begin(), n = _Gatelist.end(); i != n; i++){
+      if (i->second->_type == CONST_GATE) continue;
+      if (i->second->_fanout.size()==0 and i->second->_type!=PO_GATE){
+         if(a2){cout<<"Gates defined but not used  :";a2=false;}
+         cout<<" "<<i->first;
+      }
+   }
+   if(!a2){cout<<endl;}
+   */
 }
 
 void
-CirMgr::printFECPairs() const
+CirMgr::printFECPairs() const 
 {
-   
+   // TODO
 }
 
 void
@@ -545,6 +577,10 @@ void
 CirMgr::DFS()
 {          
    // _globalRef = 0;
+   if (_dfsList.size()>0)
+      for (unsigned i = 0; i < _dfsList.size(); i++)
+         _dfsList.pop_back();
+   
    _globalRef++;
    for (unsigned i = 0; i < _out.size(); i++)
       DFSVisit(_out[i]->_id);
@@ -571,4 +607,3 @@ CirMgr::DFSVisit(unsigned vertex)
    // if(exist==false) _dfsList.push_back(_Gatelist[vertex]);
    _dfsList.push_back(_Gatelist[vertex]);
 }
-

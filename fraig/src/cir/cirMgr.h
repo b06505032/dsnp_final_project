@@ -68,6 +68,11 @@ public:
    void writeAag(ostream&) const;
    void writeGate(ostream&, CirGate*) const;
 
+   // for DFS
+   static unsigned _globalRef;
+   void DFS();
+   void DFSVisit(unsigned vertex);
+
 private:
    ofstream           *_simLog;
 
@@ -83,11 +88,6 @@ private:
    GateList _aig;
    map<unsigned, CirGate*> _Gatelist;
    GateList _dfsList;
-   
-   // for DFS
-   static unsigned _globalRef;
-   void DFS();
-   void DFSVisit(unsigned vertex);
 
    // Helper function
    void readHeader();
