@@ -209,11 +209,11 @@ CirMgr::printSummary() const
    cout << endl;
    cout << "Circuit Statistics" << endl;
    cout << "==================" << endl;
-   cout << "  PI    " << setw(8) << right << I << endl;
-   cout << "  PO    " << setw(8) << right << O << endl;
+   cout << "  PI    " << setw(8) << right << _in.size()  << endl;
+   cout << "  PO    " << setw(8) << right << _out.size() << endl;
    cout << "  AIG   " << setw(8) << right << _aig.size() << endl;
    cout << "------------------" << endl;
-   cout << "  Total " << setw(8) << right << I+O+_aig.size() << endl;
+   cout << "  Total " << setw(8) << right << _in.size()+_out.size()+_aig.size() << endl;
 }
 
 void
@@ -292,11 +292,12 @@ CirMgr::printPOs() const
 void
 CirMgr::printFloatGates() const
 {
+   /*
    IdList undef;
    IdList unused;
    map<unsigned, CirGate*>::const_iterator i, n;
    for (i = _Gatelist.begin(), n = _Gatelist.end(); i != n; i++) {
-      if (i->second->_type == UNDEF_GATE)  continue;
+      if (i->second->_type == UNDEF_GATE) continue;
       if (i->second->_type == CONST_GATE) continue;
       if (i->second->_type != PO_GATE && i->second->_fanout.empty())
       {
@@ -326,15 +327,13 @@ CirMgr::printFloatGates() const
          cout << ' ' << unused[i];
       cout << endl;
    }
-   // -----------
-   
+   */
 
-   /*
    bool a1=true,a2=true;
    map<unsigned, CirGate*>::const_iterator i, n;
    for(i = _Gatelist.begin(), n = _Gatelist.end(); i != n; i++){
       if (i->second->_type == CONST_GATE) continue;
-      if(i->second->_type==AIG_GATE){
+      if(i->second->_type == AIG_GATE){
          if(i->second->_fanin[0]->_type == UNDEF_GATE or i->second->_fanin[1]->_type==UNDEF_GATE){
             if(a1){cout<<"Gates with floating fanin(s):";a1=false;}
             cout<<" "<< i->first;
@@ -348,15 +347,14 @@ CirMgr::printFloatGates() const
       }
    }
    if(!a1){cout<<endl;}
-   for(i = _Gatelist.begin(), n = _Gatelist.end(); i != n; i++){
+   for(i = _Gatelist.begin(), n = _Gatelist.end(); i != n; i++) {
       if (i->second->_type == CONST_GATE) continue;
-      if (i->second->_fanout.size()==0 and i->second->_type!=PO_GATE){
+      if (!i->second->deleted and i->second->_fanout.size()==0 and i->second->_type!=PO_GATE) {
          if(a2){cout<<"Gates defined but not used  :";a2=false;}
          cout<<" "<<i->first;
       }
    }
    if(!a2){cout<<endl;}
-   */
 }
 
 void

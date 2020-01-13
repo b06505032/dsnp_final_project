@@ -104,8 +104,6 @@ private:
    // for optimize
    void opt(unsigned vertex);
    void merge(unsigned del_id, unsigned fi_id, bool inputInv);
-   void reconnect(unsigned del_id);
-   void replace(CirGate*& a, CirGate* b, bool inv);
 };
 
 #endif // CIR_MGR_H
