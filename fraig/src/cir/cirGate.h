@@ -69,6 +69,14 @@ public:
         if(_fanin[j]->_id == del) _invert.erase(_invert.begin()+j);
       }  
     }
+   void eraseFanOut(int del) 
+   {
+    for(int j = 0;j<_fanout.size();j++)
+    {
+      if(_fanout[j]->_id == del) _fanout.erase(_fanout.begin()+j);
+      if(_fanout[j]->_id == del) _outinvert.erase(_outinvert.begin()+j);
+    }  
+   }
    
 private:
 

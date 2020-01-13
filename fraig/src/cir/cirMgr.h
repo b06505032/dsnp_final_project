@@ -90,6 +90,7 @@ private:
    GateList _dfsList;
    // for sweep
    bool sweeped = false;
+   bool opted = false;
 
    // Helper function
    void readHeader();
@@ -102,7 +103,7 @@ private:
 
    // for optimize
    void opt(unsigned vertex);
-   void updateIO(unsigned del_id, unsigned fi_id, bool inputInv);
+   void merge(unsigned del_id, unsigned fi_id, bool inputInv);
    void reconnect(unsigned del_id);
    void replace(CirGate*& a, CirGate* b, bool inv);
 };

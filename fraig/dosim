@@ -1,5 +1,14 @@
-cirr -r tests.fraig/sim05.aag
+cirr -r tests.fraig/sim07.aag
+cirp
 cirp -n
+cirw
+cirsw
+cirp
+cirp -n
+cirw
 ciropt
+cirp
 cirp -n
+cirw
+usage
 q -f

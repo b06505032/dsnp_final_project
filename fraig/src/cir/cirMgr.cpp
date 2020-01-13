@@ -292,7 +292,6 @@ CirMgr::printPOs() const
 void
 CirMgr::printFloatGates() const
 {
-   
    IdList undef;
    IdList unused;
    map<unsigned, CirGate*>::const_iterator i, n;
@@ -377,8 +376,9 @@ CirMgr::writeAag(ostream& outfile) const
       outfile << l[i+1];
       outfile << endl;
    }
-   for (unsigned i = 0; i < O; i++) {
-      outfile << l[i+1+I];
+   for (unsigned i = 0; i < _out.size(); i++) {
+      if(opted) outfile << _out[i]->_id;
+      else outfile << l[i+1+I];
       outfile << endl;
    }
    for (size_t i = 0; i < _dfsList.size(); i++) {
