@@ -59,6 +59,16 @@ public:
    mutable unsigned _mark;
    void dfs_fanin(int level, int cur) const;
    void dfs_fanout(int level, int cur) const;
+
+
+   void eraseFanIn(int del) 
+    {
+      for(int j = 0;j<_fanin.size();j++)
+      {
+        if(_fanin[j]->_id == del) _fanin.erase(_fanin.begin()+j);
+        if(_fanin[j]->_id == del) _invert.erase(_invert.begin()+j);
+      }  
+    }
    
 private:
 
@@ -73,6 +83,7 @@ protected:
   string _name;
 
   bool sweep = true;
+  bool deleted = false;
 };
 
 class CirConstGate: public CirGate  {

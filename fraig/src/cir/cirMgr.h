@@ -69,7 +69,7 @@ public:
    void writeGate(ostream&, CirGate*) const;
 
    // for DFS
-   static unsigned _globalRef;
+   unsigned _globalRef;
    void DFS();
    void DFSVisit(unsigned vertex);
 
@@ -88,6 +88,8 @@ private:
    GateList _aig;
    map<unsigned, CirGate*> _Gatelist;
    GateList _dfsList;
+   // for sweep
+   bool sweeped = false;
 
    // Helper function
    void readHeader();
@@ -98,6 +100,11 @@ private:
    void connection();
    bool lexOptions(const string& option, vector<string>& tokens) const;
 
+   // for optimize
+   void opt(unsigned vertex);
+   void updateIO(unsigned del_id, unsigned fi_id, bool inputInv);
+   void reconnect(unsigned del_id);
+   void replace(CirGate*& a, CirGate* b, bool inv);
 };
 
 #endif // CIR_MGR_H

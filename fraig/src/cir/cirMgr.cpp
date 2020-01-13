@@ -28,7 +28,7 @@ using namespace std;
 /*******************************/
 CirMgr* cirMgr = 0;
 
-unsigned CirMgr::_globalRef =0;
+// unsigned CirMgr::_globalRef =0;
 
 enum CirParseError {
    EXTRA_SPACE,
@@ -211,9 +211,9 @@ CirMgr::printSummary() const
    cout << "==================" << endl;
    cout << "  PI    " << setw(8) << right << I << endl;
    cout << "  PO    " << setw(8) << right << O << endl;
-   cout << "  AIG   " << setw(8) << right << A << endl;
+   cout << "  AIG   " << setw(8) << right << _aig.size() << endl;
    cout << "------------------" << endl;
-   cout << "  Total " << setw(8) << right << I+O+A << endl;
+   cout << "  Total " << setw(8) << right << I+O+_aig.size() << endl;
 }
 
 void
@@ -229,6 +229,7 @@ CirMgr::printNetlist() const
    unsigned n = 0;
    cout<<endl;
    for (size_t i = 0; i < _dfsList.size(); i++) {
+      // if(_dfsList[i]==NULL) cout<<"dfs "<< i <<"is null!"<<endl; continue;
       if (_dfsList[i]->_type == PI_GATE)
       {
          cout << "[" << i-n << "] ";
@@ -576,11 +577,7 @@ CirMgr::lexOptions(const string& option, vector<string>& tokens) const
 void
 CirMgr::DFS()
 {          
-   // _globalRef = 0;
-   if (_dfsList.size()>0)
-      for (unsigned i = 0; i < _dfsList.size(); i++)
-         _dfsList.pop_back();
-   
+   if (_dfsList.size()>0) _dfsList.clear();
    _globalRef++;
    for (unsigned i = 0; i < _out.size(); i++)
       DFSVisit(_out[i]->_id);
