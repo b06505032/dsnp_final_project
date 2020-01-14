@@ -339,6 +339,7 @@ CirMgr::printFloatGates() const
             if(i->second->_fanin[j]->_type == UNDEF_GATE){
                if(a1){cout<<"Gates with floating fanin(s):";a1=false;}
                cout<<" "<< i->first;
+               break;
             }
          }
          // if(i->second->_fanin[0]->_type == UNDEF_GATE or i->second->_fanin[1]->_type==UNDEF_GATE){
@@ -478,29 +479,29 @@ CirMgr::readAig()
 void
 CirMgr::readComment()
 {
-   int nameLine = I+O+A+1;
-   while (nameLine < l.size())
+   int line = I+O+A+1;
+   while (line < l.size())
    {
-      if (l[nameLine] == "c") break;
-      vector<string> newName;
-      if (!lexOptions(l[nameLine], newName)) return ;
-      if (l[nameLine][0] == 'i') {
+      if (l[line] == "c") break;
+      vector<string> name;
+      if (!lexOptions(l[line], name)) return ;
+      if (l[line][0] == 'i') {
          int index;
-         string s = newName[0];
+         string s = name[0];
          stringstream ss(s);
          ss.ignore(1);
          ss >> index;
-         _in[index]->_name = newName[1];
+         _in[index]->_name = name[1];
       }
-      else if (l[nameLine][0] == 'o') {
+      else if (l[line][0] == 'o') {
          int index;
-         string s = newName[0];
+         string s = name[0];
          stringstream ss(s);
          ss.ignore(1);
          ss >> index;
-         _out[index]->_name = newName[1];
+         _out[index]->_name = name[1];
       }
-      nameLine++;
+      line++;
    }
 }
 

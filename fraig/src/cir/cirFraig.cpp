@@ -40,38 +40,68 @@ CirMgr::strash()
   for(int i=0;i<_dfsList.size();i++) {
     CirGate*& g = _Gatelist[_dfsList[i]->_id];
     if(g->_type==AIG_GATE) {
-      cout<<g->getTypeStr()<<" "<<g->getID()<<" key:"<<g->getkey()<<endl;
+      /*
+      // --------GET THE KEY
+      cout<<endl<<"get the key: ";
+      cout<<endl<<g->getTypeStr()<<" "<<g->getID()<<" key:"<<g->getkey()<<endl;
+      
+      // --------PRINT OUT GATE FANIN
+      cout<<endl<<"before merging... GATE: ";
+      g->printGate();
+      if (g->_fanin[0]->_type == UNDEF_GATE) cout << '*';
+      if (g->_invert[0]) cout << '!';
+      cout<< g->_fanin[0]->_id <<' ';
+      if (g->_fanin[1]->_type == UNDEF_GATE) cout << '*';
+      if (g->_invert[1]) cout << '!';
+      cout<< g->_fanin[1]->_id;
+      cout << endl;
+      // --------PRINT OUT GATE FANIN
+      */
+      
       int p = myhash.insert(g);
-      // if(myhash.insert(g)!=-1){
+      // if(myhash.insert(g)!=-1)
       if( p != -1 ) { //cannot insert
         // CirGate*& p_ = _Gatelist[p];
         // myhash.query(p_);
-        strashed = true;
-        cout << "Strashing: " << (unsigned)p << " merging " << g->_id << "..." << endl;
-				// merge( g->_id, (unsigned)p, false);
-        replace(g, _Gatelist[p]);
+				merge( g->_id, (unsigned)p, false, "str");
+        
+        /*
+        // --------PRINT OUT GATE FANIN
+        cout<<endl<<"after merging... GATE: ";
+        _Gatelist[p]->printGate();
+        if (_Gatelist[p]->_fanin[0]->_type == UNDEF_GATE) cout << '*';
+        if (_Gatelist[p]->_invert[0]) cout << '!';
+        cout<< _Gatelist[p]->_fanin[0]->_id <<' ';
+        if (_Gatelist[p]->_fanin[1]->_type == UNDEF_GATE) cout << '*';
+        if (_Gatelist[p]->_invert[1]) cout << '!';
+        cout<< _Gatelist[p]->_fanin[1]->_id;
+        cout << endl;
+        // --------PRINT OUT GATE FANIN
+        */
       } 
     }
     else continue;
   }
   
-  // for(size_t b = 0; b < myhash.numBuckets();b++){
-  //   cout<<"["<<b<<"]: ";
-  //   for (size_t i = 0; i < myhash[b].size(); ++i)
-  //     cout<<myhash[b][i]->_id<<" ";
-  //   cout<<endl;
-  // }
-  // cout<<endl<<"---------"<<endl;
+  /*
+  for(size_t b = 0; b < myhash.numBuckets();b++){
+    cout<<"["<<b<<"]: ";
+    for (size_t i = 0; i < myhash[b].size(); ++i)
+      cout<<myhash[b][i]->_id<<" ";
+    cout<<endl;
+  }
+  cout<<endl<<"---------"<<endl;
   
-  // for(int b = 0;b <myhash.numBuckets();b++)
-  // {
-  //   while(myhash[b].size()>=2){
-  //     cout << "Strashing: " << myhash[b][myhash[b].size()-1]->_id << " merging " << myhash[b][myhash[b].size()-2]->_id << "..." << endl;
-  //     merge(myhash[b][myhash[b].size()-1]->_id, myhash[b][myhash[b].size()-2]->_id);
-  //     myhash[b].pop_back();
-  //     myhash[b].pop_back();
-  //   }
-  // }
+  for(int b = 0;b <myhash.numBuckets();b++)
+  {
+    while(myhash[b].size()>=2){
+      cout << "Strashing: " << myhash[b][myhash[b].size()-1]->_id << " merging " << myhash[b][myhash[b].size()-2]->_id << "..." << endl;
+      merge(myhash[b][myhash[b].size()-1]->_id, myhash[b][myhash[b].size()-2]->_id);
+      myhash[b].pop_back();
+      myhash[b].pop_back();
+    }
+  }
+  */
   
   if(strashed)
   {
@@ -90,49 +120,3 @@ CirMgr::fraig()
 /********************************************/
 /*   Private member functions about fraig   */
 /********************************************/
-
-void
-CirMgr::replace(CirGate*& a, CirGate* b, bool inv)
-{
-	// Detach a's inputs
-	for(unsigned i = 0; i < a->_fanin.size(); ++i) {
-		for(unsigned j = 0; j < a->_fanin[i]->_fanout.size(); ++j) {
-			if(a == a->_fanin[i]->_fanout[j]) {
-				a->_fanin[i]->_fanout.erase(a->_fanin[i]->_fanout.begin() + j);
-				a->_fanin[i]->_outinvert.erase(a->_fanin[i]->_outinvert.begin() + j);
-				break;
-			}
-		}
-	}
-
-	// Attach a's output to b
-	if(b) {
-		for(unsigned n = 0; n < a->_fanout.size(); ++n) {
-			b->_fanout.push_back(a->_fanout[n]);
-			b->_outinvert.push_back(inv != a->_outinvert[n]);
-		}
-	}
-
-	// Reconnect a's output
-	for(unsigned i = 0; i < a->_fanout.size(); ++i) {
-		for(unsigned j = 0; j < a->_fanout[i]->_fanin.size(); ++j) {
-			if(a->_fanout[i]->_fanin[j] == a) {
-				if(b) {
-					a->_fanout[i]->_fanin[j] = b;
-					a->_fanout[i]->_invert[j] = (inv != a->_outinvert[i]);
-				}
-				else {
-					a->_fanout[i]->_fanin.erase(a->_fanout[i]->_fanin.begin() + j);
-					a->_fanout[i]->_invert.erase(a->_fanout[i]->_invert.begin() + j);
-				}
-				break;
-			}
-		}
-	}
-
-	// Delete a, also remove from _idGlist
-	a->deleted = true;
-  delete a;
-	// a = 0;
-	// --_header[4];
-}

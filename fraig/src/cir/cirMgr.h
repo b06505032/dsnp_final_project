@@ -106,10 +106,9 @@ private:
 
    // for optimize
    void opt(unsigned vertex);
-   void merge(unsigned del_id, unsigned fi_id, bool inputInv=0);
+   void merge(unsigned del_id, unsigned fi_id, bool inputInv, string opt_str);
 
    //for strash
-   void replace(CirGate*& a, CirGate* b, bool inv = false);
 
 };
 

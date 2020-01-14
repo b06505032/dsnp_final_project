@@ -81,18 +81,12 @@ public:
 
    unsigned getkey()
    {
-    // unsigned a = 2 * _fanin[0]->_id + _invert[0];
-    // unsigned b = 2 * _fanin[1]->_id + _invert[1];
-    // unsigned k;
-    // if(a < b) ;   //HashKey(a, b);
-    // else k= (b << 31) + a;        //HashKey(b, a);
-    size_t i0 = 0, i1 = 0;
-    if(_fanin[0]!=NULL) i0 = _fanin[0]->_id;
-    if(_fanin[1]!=NULL) i1 = _fanin[1]->_id;
-    if(i0<i1)
-      return i1<<5 + i0<<20 + _invert[0]<<1 + _invert[1];
-    else 
-      return i0<<5 + i1<<20 + _invert[1]<<1 + _invert[0];
+    // size_t a = 0, b=0;
+    bool hello = 0;
+    // a = _fanin[hello]->_id;
+    // b = _fanin[!hello]->_id;
+    (_fanin[1] < _fanin[0]) ? hello = 1 : hello = 0 ;
+    return (_fanin[hello]->_id << 32) + (_fanin[!hello]->_id << 2) + (_invert[!hello] << 1) + _invert[hello];
    }
    
 private:

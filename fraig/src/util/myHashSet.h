@@ -163,11 +163,10 @@ public:
    // if yes, replace d with the data in the hash and return true;
    // else return false;
    bool query(Data& d) const { 
-      // if(!check(d)) 
-         // return false;
-      // else {
+      if(!check(d)) 
+         return false;
+      else {
          // size_t id = bucketNum(d);
-         // size_t id = d->getkey();
          size_t id = d->getkey() % _numBuckets;
          for(size_t index = 0; index < _buckets[id].size(); index++) {
             if(_buckets[id][index]->getkey() == d->getkey()) {
@@ -176,7 +175,7 @@ public:
             }
          }
          return false;
-      // }
+      }
    }
 
    // update the entry in hash that is equal to d (i.e. == return true)
@@ -202,10 +201,8 @@ public:
    // return true if inserted successfully (i.e. d is not in the hash)
    // return false is d is already in the hash ==> will not insert
    int insert(const Data& d) { 
-      // if(check(d)) return false;
+      /*
       size_t id = d->getkey() % _numBuckets;
-      // _buckets[id].push_back(d);
-      // return true;
       if(_buckets[id].size()==0) {
          _buckets[id].push_back(d);
          cout << "inserted: " << d->getTypeStr() <<" "<< d->getID() << endl;
@@ -216,9 +213,15 @@ public:
          _buckets[id].pop_back();
          return i;
       }
-      
-      // _buckets[id].push_back(d);
-      // return true;
+      */
+      size_t id = d->getkey() % _numBuckets;
+      for(size_t i = 0;i<_buckets[id].size();i++){
+         if(_buckets[id][i]->getkey()==d->getkey()) 
+            return _buckets[id][i]->getID();
+      }
+      _buckets[id].push_back(d);
+      // cout << "inserted: " << d->getTypeStr() <<" "<< d->getID() << endl;
+      return -1;
    }
 
    // return true if removed successfully (i.e. d is in the hash)

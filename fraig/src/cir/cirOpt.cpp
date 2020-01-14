@@ -36,22 +36,30 @@ CirMgr::sweep()
   for(unsigned j = 0; j<_dfsList.size();j++)
     _dfsList[j]->sweep = false;
   
-  for (unsigned aigid=0; aigid<_Gatelist.size();aigid++)
+  /*
+  cout<<endl<<"sweep before: ";
+  cout<<"size: "<<_aig.size()<<", id: ";
+  for(int i = 0;i!=_aig.size();i++)
+    cout<<_aig[i]->_id<<" ";
+  cout<<endl;
+  */
+  // cout<<"Gate size "<< _Gatelist.size()<<endl;
+  for (unsigned aigid = 0; aigid < _Gatelist.size(); aigid++)
   {
-    // cout<<"id: "<<_Gatelist[aigid]->_id<<", type: "<<_Gatelist[aigid]->_type<<" , sweep: "<<_Gatelist[aigid]->sweep<<endl;
+    if(_Gatelist[aigid]->_type == PI_GATE) {_Gatelist[aigid]->sweep=false;}
+    if(_Gatelist[aigid]->_type == CONST_GATE) {_Gatelist[aigid]->sweep=false;}
+    // cout<<"id: "<<_Gatelist[aigid]->_id<<", type: "<<_Gatelist[aigid]->getTypeStr()<<" , sweep: "<<_Gatelist[aigid]->sweep<<endl;
+    
     if(_Gatelist[aigid]->sweep == false) continue;
+    else if(_Gatelist[aigid]-> deleted) continue;
     else
     {
-      if(_Gatelist[aigid]->_type == PI_GATE) {_Gatelist[aigid]->sweep=false; continue;}
-      else if(_Gatelist[aigid]->_type == CONST_GATE) {_Gatelist[aigid]->sweep=false; continue;}
-      else
-      {
-        if (_Gatelist[aigid]-> deleted) continue;
+        // if (_Gatelist[aigid]-> deleted) continue;
         sweeped = true;
         cout<<"Sweeping: "<<_Gatelist[aigid]->getTypeStr()<<"("<<_Gatelist[aigid]->_id<<") removed..."<<endl;
         _Gatelist[aigid]->deleted = true;
-        if(_Gatelist[aigid]->_type==AIG_GATE) {
-          // A=A-1;
+        if(_Gatelist[aigid]->_type==AIG_GATE)
+        {
           _Gatelist[aigid]->_type = UNDEF_GATE;
         }
         if(!_Gatelist[aigid]->_fanin.empty())
@@ -80,28 +88,25 @@ CirMgr::sweep()
           _Gatelist[aigid]->_fanout.clear();
           _Gatelist[aigid]->_outinvert.clear();
         }
-      }
     }
   }
-
-  // for (unsigned id=0; id<_Gatelist.size();id++)
-    // cout<<endl<<"_Gatelist["<<id<<"]"<<_Gatelist[id]->getTypeStr()<<" ,sweep:"<<_Gatelist[id]->sweep<<endl;
-  
-  // cout<<"sweep before: ";
-  // cout<<"size: "<<_aig.size()<<", id: ";
-  // for(int i = 0;i!=_aig.size();i++)
-  //   cout<<_aig[i]->_id<<" ";
-  
-  // cout<<endl<<"sweep after: ";
+    
   if(sweeped)
   {
+    // cout<<endl<<"sweeped"<<endl;
     _aig.clear();
     for (unsigned i = 0; i < _Gatelist.size(); i++)
-      if(_Gatelist[i]->_type == AIG_GATE) _aig.push_back(_Gatelist[i]);
+      if(_Gatelist[i]->_type == AIG_GATE && !_Gatelist[i]->deleted) _aig.push_back(_Gatelist[i]);
   }
-  // cout<<"size: "<<_aig.size()<<", id: ";
-  // for(unsigned i = 0; i<_aig.size(); i++)
-      // cout<<_aig[i]->_id<<" ";
+  // else cout<<endl<<"no-sweep"<<endl;
+  
+  /*
+  cout<<endl<<"sweep after: ";
+  cout<<"size: "<<_aig.size()<<", id: ";
+  for(unsigned i = 0; i<_aig.size(); i++)
+    cout<<_aig[i]->_id<<" ";
+  cout<<endl;
+  */
 }
 
 // Recursively simplifying from POs;
@@ -167,12 +172,12 @@ CirMgr::opt(unsigned vertex)
         if(_Gatelist[vertex]->_invert[0] && _Gatelist[vertex]->_invert[1])
         {
           // cout << vertex << " has const1 input == "<<endl;
-          merge(vertex, 0, 1);
+          merge(vertex, 0, 1, "opt");
         }
 				else
         {
           // cout << vertex << " has const1 input == "<<endl;
-          merge(vertex, 0, 0);
+          merge(vertex, 0, 0, "opt");
         }
       }
       else if(_Gatelist[vertex]->_fanin[0]->_type == CONST_GATE)
@@ -180,12 +185,12 @@ CirMgr::opt(unsigned vertex)
         if (_Gatelist[vertex]->_invert[0])
         {
           // cout<<vertex<<" has const1 input at [0]"<<endl;
-          merge(vertex, _Gatelist[vertex]->_fanin[1]->_id, _Gatelist[vertex]->_invert[1]);
+          merge(vertex, _Gatelist[vertex]->_fanin[1]->_id, _Gatelist[vertex]->_invert[1], "opt");
         }
         else
         {
           // cout<<vertex<<" has const0 input at [0]"<<endl;
-          merge(vertex, 0, 0);
+          merge(vertex, 0, 0, "opt");
         }
       }
       else if(_Gatelist[vertex]->_fanin[1]->_type == CONST_GATE)
@@ -193,12 +198,12 @@ CirMgr::opt(unsigned vertex)
         if (_Gatelist[vertex]->_invert[1])
         {
           // cout<<vertex<<" has const1 input at [1]"<<endl;
-          merge(vertex, _Gatelist[vertex]->_fanin[0]->_id, _Gatelist[vertex]->_invert[0]);
+          merge(vertex, _Gatelist[vertex]->_fanin[0]->_id, _Gatelist[vertex]->_invert[0], "opt");
         }
         else
         {
           // cout<<vertex<<" has const0 input at [1]"<<endl;
-          merge(vertex, 0, 0);
+          merge(vertex, 0, 0, "opt");
         }
       }
       else if(_Gatelist[vertex]->_fanin[0]->_id == _Gatelist[vertex]->_fanin[1]->_id)
@@ -206,12 +211,12 @@ CirMgr::opt(unsigned vertex)
         if (_Gatelist[vertex]->_invert[0] == _Gatelist[vertex]->_invert[1])
         {
           // cout<<vertex<<" has same input"<<endl;
-          merge(vertex, _Gatelist[vertex]->_fanin[0]->_id, _Gatelist[vertex]->_invert[0]);
+          merge(vertex, _Gatelist[vertex]->_fanin[0]->_id, _Gatelist[vertex]->_invert[0], "opt");
         }
         else
         {
           // cout<<vertex<<" has inverse input"<<endl;
-          merge(vertex, 0, 0);
+          merge(vertex, 0, 0, "opt");
         }
       }
     }
@@ -219,10 +224,18 @@ CirMgr::opt(unsigned vertex)
 }
 
 void
-CirMgr::merge(unsigned del_id, unsigned fi_id, bool inputInv)
+CirMgr::merge(unsigned del_id, unsigned fi_id, bool inputInv, string opt_str)
 {
-  cout << "Simplifying: " << fi_id << " merging " << (inputInv ? "!" : "") << del_id << "..." << endl;
-  opted = true;
+  if(opt_str=="opt")
+  {
+    cout << "Simplifying: " << fi_id << " merging " << (inputInv ? "!" : "") << del_id << "..." << endl;
+    opted = true;
+  }
+  if(opt_str=="str")
+  {
+    cout << "Strashing: " << fi_id << " merging " << (inputInv ? "!" : "") << del_id << "..." << endl;
+    strashed = true;
+  }
   // erase a-x----del_id 
   for(unsigned i = 0;i<_Gatelist[del_id]->_fanin.size();i++)
     _Gatelist[del_id]->_fanin[i]->eraseFanOut(del_id);

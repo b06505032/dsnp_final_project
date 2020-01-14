@@ -1,8 +1,16 @@
-cirr -r tests.fraig/opt05.aag
+cirr -r tests.fraig/strash10.aag
+cirp
+cirp -n
+cirp -fl
+cirsw
 cirp
 cirp -n
 cirp -fl
 ciropt
+cirp
+cirp -n
+cirp -fl
+cirstr
 cirp
 cirp -n
 cirp -fl
