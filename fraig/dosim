@@ -1,9 +1,10 @@
-cirr -r tests.fraig/opt06.aag
+cirr -r tests.fraig/opt05.aag
 cirp
 cirp -n
 cirp -fl
 ciropt
 cirp
 cirp -n
+cirp -fl
 usage
 q -f

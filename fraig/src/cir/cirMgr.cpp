@@ -328,16 +328,23 @@ CirMgr::printFloatGates() const
       cout << endl;
    }
    */
+   
 
    bool a1=true,a2=true;
    map<unsigned, CirGate*>::const_iterator i, n;
    for(i = _Gatelist.begin(), n = _Gatelist.end(); i != n; i++){
       if (i->second->_type == CONST_GATE) continue;
-      if(i->second->_type == AIG_GATE){
-         if(i->second->_fanin[0]->_type == UNDEF_GATE or i->second->_fanin[1]->_type==UNDEF_GATE){
-            if(a1){cout<<"Gates with floating fanin(s):";a1=false;}
-            cout<<" "<< i->first;
+      if(!i->second->deleted and i->second->_type == AIG_GATE){
+         for(int j = 0; j<i->second->_fanin.size();j++) {
+            if(i->second->_fanin[j]->_type == UNDEF_GATE){
+               if(a1){cout<<"Gates with floating fanin(s):";a1=false;}
+               cout<<" "<< i->first;
+            }
          }
+         // if(i->second->_fanin[0]->_type == UNDEF_GATE or i->second->_fanin[1]->_type==UNDEF_GATE){
+         //    if(a1){cout<<"Gates with floating fanin(s):";a1=false;}
+         //    cout<<" "<< i->first;
+         // }
       }
       if(i->second->_type==PO_GATE) {
          if(i->second->_fanin[0]->_type == UNDEF_GATE) {
