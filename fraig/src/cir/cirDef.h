@@ -10,7 +10,8 @@
 #define CIR_DEF_H
 
 #include <vector>
-#include "myHashMap.h"
+// #include "myHashMap.h"
+#include "myHashSet.h"
 
 using namespace std;
 

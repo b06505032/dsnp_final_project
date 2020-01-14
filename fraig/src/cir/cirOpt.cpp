@@ -227,9 +227,11 @@ CirMgr::merge(unsigned del_id, unsigned fi_id, bool inputInv)
   for(unsigned i = 0;i<_Gatelist[del_id]->_fanin.size();i++)
     _Gatelist[del_id]->_fanin[i]->eraseFanOut(del_id);
   // connect a-o-----(del_id)-------f1, f2, ..., fn
-  for(unsigned i=0; i<_Gatelist[del_id]->_fanout.size();i++) {
-    _Gatelist[fi_id]->_fanout.push_back(_Gatelist[del_id]->_fanout[i]);
-    _Gatelist[fi_id]->_outinvert.push_back(inputInv != _Gatelist[del_id]->_outinvert[i]);
+  if(_Gatelist[fi_id]){
+    for(unsigned i=0; i<_Gatelist[del_id]->_fanout.size();i++) {
+      _Gatelist[fi_id]->_fanout.push_back(_Gatelist[del_id]->_fanout[i]);
+      _Gatelist[fi_id]->_outinvert.push_back(inputInv != _Gatelist[del_id]->_outinvert[i]);
+    }
   }
   // del_id's fo's fi
   for(unsigned i = 0; i<_Gatelist[del_id]->_fanout.size();i++) {

@@ -56,8 +56,63 @@ public:
       friend class HashMap<HashKey, HashData>;
 
    public:
-
+      iterator(size_t bucketid, const size_t numBuckets, vector<Data> *b) : _bucketid(bucketid), _numBuckets(numBuckets), _index(0), _node(&b[bucketid][0]), _buckets(b) {}
+      ~iterator() {}
+      const Data& operator * () const { return *(_node); }
+      iterator& operator ++ () { 
+         if(_buckets[_bucketid].size() >= 2 && _index < _buckets[_bucketid].size() - 1)
+         {
+            _index++;
+            _node = &_buckets[_bucketid][_index];
+         }
+         else
+         {
+            _bucketid++;
+            while(_bucketid < _numBuckets) 
+            {
+               if(_buckets[_bucketid].empty()) 
+                  _bucketid++; 
+               else break;
+            }
+            _index = 0;
+            _node = &_buckets[_bucketid][_index];
+         }
+         return *(this);
+      } 
+      iterator operator ++ (int) { iterator it = (*this); (*this)++; return it; }
+      iterator& operator -- () { 
+         if(_buckets[_bucketid].size() >= 2 && _index > 0)
+         {
+            _index--;
+            _node = &_buckets[_bucketid][_index];
+         }
+         else
+         {
+            _bucketid++;
+            while (_buckets[_bucketid].empty()) { _bucketid++; }
+            _index = _buckets[_bucketid].size() - 1;
+            _node = &_buckets[_bucketid][_index];
+         }
+         return *(this);
+      }
+      iterator operator -- (int) { iterator it = (*this); (*this)--; return it; }
+      iterator& operator = (const iterator& i) { 
+         this->_node = i._node;
+         this->_numBuckets = i._numBuckets;
+         this->_bucketid = i._bucketid;
+         this->_index = i._index;
+         return (*this); 
+      } 
+      bool operator == (const iterator& i) const { 
+         return (i._node == this->_node && i._bucketid == this->_bucketid && i._index == this->_index); 
+      }
+      bool operator != (const iterator& i) const {
+         return !(i == *this);
+      } 
    private:
+      Data* _node;
+      size_t _numBuckets, _bucketid, _index;
+      vector<Data>* _buckets;
    };
 
    void init(size_t b) {
@@ -77,13 +132,28 @@ public:
    // TODO: implement these functions
    //
    // Point to the first valid data
-   iterator begin() const { return iterator(); }
+   iterator begin() const { 
+      size_t id = 0;
+      while( id < _numBuckets )
+      {
+         if(_buckets[id].size()) {
+            return iterator(id, _numBuckets, _buckets);
+         }
+         id++;
+      }
+      return end();  
+   }
    // Pass the end
-   iterator end() const { return iterator(); }
+   iterator end() const { return iterator(_numBuckets, _numBuckets, _buckets); }
    // return true if no valid data
-   bool empty() const { return true; }
+   bool empty() const { return begin() == end(); }
    // number of valid data
-   size_t size() const { size_t s = 0; return s; }
+   size_t size() const { 
+      size_t s = 0; 
+      for(iterator b = begin(), e = end(); b != e; ++b)
+         s++;
+      return s;
+   }
 
    // check if k is in the hash...
    // if yes, return true;

@@ -73,6 +73,8 @@ public:
    void DFS();
    void DFSVisit(unsigned vertex);
 
+   //for strash
+
 private:
    ofstream           *_simLog;
 
@@ -91,6 +93,7 @@ private:
    // for sweep
    bool sweeped = false;
    bool opted = false;
+   bool strashed = false;
 
    // Helper function
    void readHeader();
@@ -103,7 +106,11 @@ private:
 
    // for optimize
    void opt(unsigned vertex);
-   void merge(unsigned del_id, unsigned fi_id, bool inputInv);
+   void merge(unsigned del_id, unsigned fi_id, bool inputInv=0);
+
+   //for strash
+   void replace(CirGate*& a, CirGate* b, bool inv = false);
+
 };
 
 #endif // CIR_MGR_H
