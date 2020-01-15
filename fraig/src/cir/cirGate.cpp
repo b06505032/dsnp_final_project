@@ -31,23 +31,41 @@ unsigned CirGate::_gmark =0;
 void
 CirGate::reportGate() const
 {
-   cout << "==================================================" << endl;
-   stringstream ss;
-   ss << "= " + getTypeStr() << '(' << _id << ")";
-   if (_name != "") {
-      ss << "\"" << _name << "\"";
+   if(deleted){
    }
-   ss << ", line " << getLineNo();
-   cout << setw(49) << left << ss.str() << "=" << endl;
-   cout << "==================================================" << endl;
+   else if(_type==UNDEF_GATE) {
+   }
+   else{
+      cout<<"================================================================================"<<endl;
+      stringstream ss;
+      ss << "= " + getTypeStr() << '(' << _id << ")";
+      if (_name != "") {
+         ss << "\"" << _name << "\"";
+      }
+      ss << ", line " << getLineNo();
+      //cout << setw(80) << left << ss.str() << endl;
+      cout<<ss.str()<<endl;
+      cout<<"= FECs:"<<endl;
+      cout<<"= Value: 00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000"<<endl;
+      //cout << "==================================================" << endl;
+      cout<<"================================================================================"<<endl;
+      
+   }
 }
 
 void
 CirGate::reportFanin(int level) const
-{
-   assert (level >= 0);
-   _gmark++;
-   dfs_fanin(level, 0);
+{  
+   if(deleted){
+   }
+   else if(_type==UNDEF_GATE) {
+   }
+   else{
+      assert (level >= 0);
+      _gmark++;
+      dfs_fanin(level, 0);
+   }
+
 }
 
 void
@@ -69,14 +87,16 @@ CirGate::dfs_fanin(int level, int cur) const
       _mark = _gmark;
       ++_cur;
    }
-   for(int n = 0; n < _fanin.size(); ++n) {
-      for(int m = 0; m < _cur; ++m) cout << "  ";
-      if(_invert[n]) cout << "!";
-      cout << _fanin[n]->getTypeStr() << " " << _fanin[n]->_id;
-      if(_fanin[n]->_mark == _gmark) { cout << " (*)" << endl; }
-      else {
-         cout << endl;
-         _fanin[n]->dfs_fanin( level, _cur + 1);
+   if(_fanin.size()>0) {
+      for(int n = 0; n < _fanin.size(); ++n) {
+         for(int m = 0; m < _cur; ++m) cout << "  ";
+         if(_invert[n]) cout << "!";
+         cout << _fanin[n]->getTypeStr() << " " << _fanin[n]->_id;
+         if(_fanin[n]->_mark == _gmark) { cout << " (*)" << endl; }
+         else {
+            cout << endl;
+            _fanin[n]->dfs_fanin( level, _cur + 1);
+         }
       }
    }
 }
@@ -92,14 +112,16 @@ CirGate::dfs_fanout(int level, int cur) const
       _mark = _gmark;
       ++_cur;
    }
-   for(int n = 0; n < _fanout.size(); ++n) {
-      for(int m = 0; m < _cur; ++m) cout << "  ";
-      if(_outinvert[n]) cout << "!";
-      cout << _fanout[n]->getTypeStr() << " " << _fanout[n]->_id;
-      if(_fanout[n]->_mark == _gmark) { cout << " (*)" << endl; }
-      else {
-         cout << endl;
-         _fanout[n]->dfs_fanout(level, _cur + 1);
+   if(_fanout.size()>0){
+      for(int n = 0; n < _fanout.size(); ++n) {
+         for(int m = 0; m < _cur; ++m) cout << "  ";
+         if(_outinvert[n]) cout << "!";
+         cout << _fanout[n]->getTypeStr() << " " << _fanout[n]->_id;
+         if(_fanout[n]->_mark == _gmark) { cout << " (*)" << endl; }
+         else {
+            cout << endl;
+            _fanout[n]->dfs_fanout(level, _cur + 1);
+         }
       }
    }
    

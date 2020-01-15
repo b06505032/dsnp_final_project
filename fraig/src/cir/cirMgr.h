@@ -28,9 +28,9 @@ class CirMgr
 public:
    CirMgr() {}
    ~CirMgr() {
-      // for(size_t i=0;i!=_Gatelist.size();i++) {
-      //    delete _Gatelist[i];
-      // }
+      for(size_t i=0;i!=_Gatelist.size();i++) {
+         delete _Gatelist[i];
+      }
    } 
 
    // Access functions
@@ -90,7 +90,7 @@ private:
    GateList _aig;
    map<unsigned, CirGate*> _Gatelist;
    GateList _dfsList;
-   // for sweep
+   // for sweep / opt / str
    bool sweeped = false;
    bool opted = false;
    bool strashed = false;
@@ -104,11 +104,12 @@ private:
    void connection();
    bool lexOptions(const string& option, vector<string>& tokens) const;
 
-   // for optimize
+   // for optimize and strash
    void opt(unsigned vertex);
    void merge(unsigned del_id, unsigned fi_id, bool inputInv, string opt_str);
 
-   //for strash
+   //for sim
+   bool validpattern(string& patternstring);
 
 };
 

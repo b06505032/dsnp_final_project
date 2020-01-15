@@ -4,6 +4,16 @@
         "iostream": "cpp",
         "ostream": "cpp",
         "vector": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "__hash_table": "cpp",
+        "__tree": "cpp",
+        "deque": "cpp",
+        "string": "cpp",
+        "unordered_map": "cpp",
+        "*.tcc": "cpp",
+        "iosfwd": "cpp",
+        "sstream": "cpp",
+        "new": "cpp",
+        "iomanip": "cpp"
     }
 }

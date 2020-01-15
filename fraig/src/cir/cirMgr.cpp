@@ -386,6 +386,7 @@ CirMgr::writeAag(ostream& outfile) const
    }
    for (unsigned i = 0; i < _out.size(); i++) {
       if(opted) outfile << _out[i]->_id;
+      else if (strashed) outfile << _out[i]->_id;
       else outfile << l[i+1+I];
       outfile << endl;
    }

@@ -279,5 +279,5 @@ CirMgr::merge(unsigned del_id, unsigned fi_id, bool inputInv, string opt_str)
   }
   _Gatelist[del_id]->_type = UNDEF_GATE;
   _Gatelist[del_id]->deleted = true;
-  delete _Gatelist[del_id];
+  // delete _Gatelist[del_id];
 }

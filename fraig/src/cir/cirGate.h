@@ -81,12 +81,16 @@ public:
 
    unsigned getkey()
    {
-    // size_t a = 0, b=0;
+    size_t a = 0, b=0, c=0, d=0, k=0;
     bool hello = 0;
-    // a = _fanin[hello]->_id;
-    // b = _fanin[!hello]->_id;
     (_fanin[1] < _fanin[0]) ? hello = 1 : hello = 0 ;
-    return (_fanin[hello]->_id << 32) + (_fanin[!hello]->_id << 2) + (_invert[!hello] << 1) + _invert[hello];
+    a = _fanin[hello]->_id << 32;
+    b = _fanin[!hello]->_id << 2; 
+    c = _invert[!hello] << 1;
+    d = _invert[hello];
+    k = a + b + c + d;
+    // return (_fanin[hello]->_id << 32) + (_fanin[!hello]->_id << 2) + (_invert[!hello] << 1) + _invert[hello];
+    return k;
    }
    
 private:
@@ -103,6 +107,7 @@ protected:
 
   bool sweep = true;
   bool deleted = false;
+
 };
 
 class CirConstGate: public CirGate  {
