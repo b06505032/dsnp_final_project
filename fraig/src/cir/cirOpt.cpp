@@ -44,12 +44,15 @@ CirMgr::sweep()
   cout<<endl;
   */
   // cout<<"Gate size "<< _Gatelist.size()<<endl;
+
+  // map<unsigned, CirGate*>::iterator it = _Gatelist.begin();
+  // unsigned aigid = 0;
   for (unsigned aigid = 0; aigid < _Gatelist.size(); aigid++)
   {
+    if(!_Gatelist[aigid]) continue;
     if(_Gatelist[aigid]->_type == PI_GATE) {_Gatelist[aigid]->sweep=false;}
     if(_Gatelist[aigid]->_type == CONST_GATE) {_Gatelist[aigid]->sweep=false;}
     // cout<<"id: "<<_Gatelist[aigid]->_id<<", type: "<<_Gatelist[aigid]->getTypeStr()<<" , sweep: "<<_Gatelist[aigid]->sweep<<endl;
-    
     if(_Gatelist[aigid]->sweep == false) continue;
     else if(_Gatelist[aigid]-> deleted) continue;
     else
@@ -89,14 +92,18 @@ CirMgr::sweep()
           _Gatelist[aigid]->_outinvert.clear();
         }
     }
+    // it++;
+    // aigid++;
   }
     
   if(sweeped)
   {
     // cout<<endl<<"sweeped"<<endl;
     _aig.clear();
-    for (unsigned i = 0; i < _Gatelist.size(); i++)
+    for (unsigned i = 0; i < _Gatelist.size(); i++){
+      if(!_Gatelist[i]) continue;
       if(_Gatelist[i]->_type == AIG_GATE && !_Gatelist[i]->deleted) _aig.push_back(_Gatelist[i]);
+    }
   }
   // else cout<<endl<<"no-sweep"<<endl;
   
@@ -126,10 +133,13 @@ CirMgr::optimize()
     //     _Gatelist[i]->_type = PO_GATE;
     // }
     _aig.clear();
-    for (unsigned i = 0; i < _Gatelist.size(); i++)
+    for (unsigned i = 0; i < _Gatelist.size(); i++){
+      if(!_Gatelist[i]) continue;
       if(_Gatelist[i]->_type == AIG_GATE && !_Gatelist[i]->deleted) _aig.push_back(_Gatelist[i]);
+    }
     _out.clear();
     for (unsigned i = 0; i < _Gatelist.size(); i++){
+      if(!_Gatelist[i]) continue;
       if(_Gatelist[i]->_type == PO_GATE && !_Gatelist[i]->deleted) _out.push_back(_Gatelist[i]);
     }
     DFS();

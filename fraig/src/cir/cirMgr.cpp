@@ -333,6 +333,7 @@ CirMgr::printFloatGates() const
    bool a1=true,a2=true;
    map<unsigned, CirGate*>::const_iterator i, n;
    for(i = _Gatelist.begin(), n = _Gatelist.end(); i != n; i++){
+      if(!i->second) continue;
       if (i->second->_type == CONST_GATE) continue;
       if(!i->second->deleted and i->second->_type == AIG_GATE){
          for(int j = 0; j<i->second->_fanin.size();j++) {
@@ -356,6 +357,7 @@ CirMgr::printFloatGates() const
    }
    if(!a1){cout<<endl;}
    for(i = _Gatelist.begin(), n = _Gatelist.end(); i != n; i++) {
+      if(!i->second) continue;
       if (i->second->_type == CONST_GATE) continue;
       if (!i->second->deleted and i->second->_fanout.size()==0 and i->second->_type!=PO_GATE) {
          if(a2){cout<<"Gates defined but not used  :";a2=false;}
